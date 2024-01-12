@@ -6,7 +6,7 @@ import android.view.View
 
 // TODO Landscape view (Calendar has fixed height), Add ViewModel to stay on selected date,
 //  Add JSON Task, start and finish EditText can get wrong input (maybe add всплывашки для выбора
-//  часа и минуты)
+//  часа и минуты), Add task description to TaskEditFragment
 
 class MainActivity : AppCompatActivity(), CalendarFragment.Callbacks {
 
