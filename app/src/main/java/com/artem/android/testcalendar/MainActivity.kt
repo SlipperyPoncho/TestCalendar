@@ -2,11 +2,10 @@ package com.artem.android.testcalendar
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 
 // TODO Landscape view (Calendar has fixed height), Add ViewModel to stay on selected date,
 //  Add JSON Task, start and finish EditText can get wrong input (maybe add всплывашки для выбора
-//  часа и минуты), Add task description to TaskEditFragment
+//  часа и минуты), Add task description to TaskEditFragment, organize code
 
 class MainActivity : AppCompatActivity(), CalendarFragment.Callbacks {
 
