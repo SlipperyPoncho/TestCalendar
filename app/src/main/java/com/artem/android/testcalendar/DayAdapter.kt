@@ -25,21 +25,13 @@ class DayAdapter(var hours: List<Hour>): RecyclerView.Adapter<DayAdapter.DayHold
             if (this.hour.task != null) {
                 taskLinearLayout.visibility = View.VISIBLE
                 taskNameTextView.text = this.hour.task!!.name
-                val minuteStart = normalizeMinutes(this.hour.task!!.dateStart.minute)
-                val minuteFinish = normalizeMinutes(this.hour.task!!.dateFinish.minute)
+                val minuteStart = CalendarUtils.stringTime(this.hour.task!!.dateStart.minute)
+                val minuteFinish = CalendarUtils.stringTime(this.hour.task!!.dateFinish.minute)
                 taskDateTextView.text = "${this.hour.task!!.dateStart.hour}:$minuteStart - " +
                         "${this.hour.task!!.dateFinish.hour}:$minuteFinish"
             } else {
                 taskLinearLayout.visibility = View.INVISIBLE
             }
-        }
-
-        private fun normalizeMinutes(minute: Int): String {
-            var minuteStr = minute.toString()
-            if (minuteStr.toInt() < 10) {
-                minuteStr = "0$minuteStr"
-            }
-            return minuteStr
         }
     }
 

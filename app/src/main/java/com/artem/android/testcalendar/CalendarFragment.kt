@@ -28,9 +28,7 @@ class CalendarFragment: Fragment(), OnItemListener {
     private lateinit var prevMonthBtn: Button
     private lateinit var nextMonthBtn: Button
     private lateinit var newTaskBtn: Button
-    //private var hours = Hour.setHours()
     private var dayAdapter: DayAdapter? = DayAdapter(emptyList())
-    //private var hourAdapter: HourAdapter? = HourAdapter(arrayListOf())
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -52,7 +50,6 @@ class CalendarFragment: Fragment(), OnItemListener {
         calendarRecyclerView = view.findViewById(R.id.calendarRecyclerView)
         dayRecyclerView = view.findViewById(R.id.day_recycler_view)
         dayRecyclerView.layoutManager = LinearLayoutManager(context)
-        //dayRecyclerView.adapter = taskAdapter
         prevMonthBtn = view.findViewById(R.id.prev_month_btn)
         prevMonthBtn.setOnClickListener{
             CalendarUtils.selectedDate = CalendarUtils.selectedDate.minusMonths(1)
@@ -76,11 +73,6 @@ class CalendarFragment: Fragment(), OnItemListener {
         dayRecyclerView.adapter = dayAdapter
     }
 
-//    private fun setHourAdapter(hours: ArrayList<String>) {
-//        hourAdapter = HourAdapter(hours)
-//        dayRecyclerView.adapter = hourAdapter
-//    }
-
     override fun onDetach() {
         super.onDetach()
         callbacks = null
@@ -93,27 +85,10 @@ class CalendarFragment: Fragment(), OnItemListener {
         val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(context, 7)
         calendarRecyclerView.layoutManager = layoutManager
         calendarRecyclerView.adapter = adapter
-        //val dayTasks = Task.tasksForDate(CalendarUtils.selectedDate)
-        val hoursList: ArrayList<Hour> = arrayListOf()
-//        val hour = Hour(CalendarUtils.selectedDate)
-        for (i in 0 until 24) {
-            val hour = Hour(LocalDateTime.of(CalendarUtils.selectedDate.toLocalDate(),
-                LocalTime.of(CalendarUtils.selectedDate.hour.plus(i), CalendarUtils.selectedDate.minute)))
-            for (task in Hour.Task.tasksList) {
-                if (task.dateStart.toLocalDate() == hour.dateTime.toLocalDate() &&
-                    task.dateStart.hour == hour.dateTime.hour) {
-                    hour.task = task
-                }
-            }
-            hoursList.add(hour)
-        }
-        //setTaskAdapter(Task.tasksForDate(CalendarUtils.selectedDate))
-        setDayAdapter(hoursList)
+        setDayAdapter(Hour.setHours())
     }
 
     override fun onItemClick(pos: Int, date: LocalDate) {
-//        val message = "Selected date " + date.dayOfMonth + " " + currentMonthFromDate(CalendarUtils.selectedDate)
-//        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         CalendarUtils.selectedDate = LocalDateTime.of(date, LocalTime.of(0,0))
         setView()
     }

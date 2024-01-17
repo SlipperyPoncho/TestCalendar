@@ -53,19 +53,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date_text_view" />
 
-    <EditText
-        android:id="@+id/start_time_edit_text"
+    <Button
+        android:id="@+id/pick_start_time_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:ems="5"
-        android:hint="@string/start_time_edit_text"
-        android:inputType="time"
-        android:minHeight="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="70dp"
+        android:text="@string/default_time_task"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.096"
-        app:layout_constraintStart_toEndOf="@+id/time_start_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/date_text_view" />
+        app:layout_constraintHorizontal_bias="0.392"
+        app:layout_constraintStart_toEndOf="@id/time_start_text_view"
+        app:layout_constraintTop_toBottomOf="@id/date_text_view" />
 
     <TextView
         android:id="@+id/time_finish_text_view"
@@ -79,19 +77,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time_start_text_view" />
 
-    <EditText
-        android:id="@+id/finish_time_edit_text"
+    <Button
+        android:id="@+id/pick_finish_time_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:ems="5"
-        android:inputType="time"
-        android:minHeight="48dp"
-        android:hint="@string/finish_time_edit_text"
+        android:layout_marginEnd="80dp"
+        android:text="@string/default_time_hour"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/time_finish_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/time_start_text_view" />
+        app:layout_constraintHorizontal_bias="0.332"
+        app:layout_constraintStart_toEndOf="@id/time_finish_text_view"
+        app:layout_constraintTop_toBottomOf="@id/pick_start_time_btn" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -103,6 +98,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time_finish_text_view" />
+
     <EditText
         android:id="@+id/description_edit_text"
         android:layout_width="wrap_content"
@@ -119,6 +115,7 @@
     <Button
         android:id="@+id/save_btn"
         android:layout_width="wrap_content"
+        android:enabled="false"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="24dp"
