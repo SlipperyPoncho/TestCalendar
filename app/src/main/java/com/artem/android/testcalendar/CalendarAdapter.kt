@@ -53,8 +53,9 @@ class CalendarAdapter(days: ArrayList<LocalDate?>, onItemListener: OnItemListene
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val day = days[position]
-        if (day == CalendarUtils.selectedDate) {
-            holder.itemView.setBackgroundColor(Color.LTGRAY)
+        if (day == LocalDate.of(CalendarUtils.selectedDate.year, CalendarUtils.selectedDate.month,
+                CalendarUtils.selectedDate.dayOfMonth)) {
+            holder.itemView.setBackgroundColor(Color.argb(95,84,152,68))
         }
         if (day != null) {
             holder.bind(day.dayOfMonth)

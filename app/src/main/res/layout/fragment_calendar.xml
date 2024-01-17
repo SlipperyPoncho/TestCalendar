@@ -116,7 +116,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendarRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="300dp"/>
+        android:layout_height="270dp"/>
     <Button
         android:id="@+id/new_task_btn"
         android:layout_width="wrap_content"
@@ -128,7 +128,8 @@
         android:textStyle="bold"
         android:textSize="20sp"/>
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tasks_recycler_view"
+        android:id="@+id/day_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="20dp"/>
 </LinearLayout>

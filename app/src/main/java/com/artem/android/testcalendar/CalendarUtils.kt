@@ -1,23 +1,23 @@
 package com.artem.android.testcalendar
 
 import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
 class CalendarUtils {
 
     companion object {
-        lateinit var selectedDate: LocalDate
+        lateinit var selectedDate: LocalDateTime
 
-        fun daysInMonthArray(date: LocalDate): ArrayList<LocalDate?> {
+        fun daysInMonthArray(date: LocalDateTime): ArrayList<LocalDate?> {
             val daysInMonthArray: ArrayList<LocalDate?> = arrayListOf()
             val yearMonth: YearMonth = YearMonth.from(date)
             val daysInMonth: Int = yearMonth.lengthOfMonth()
-            val firstOfMonth: LocalDate = selectedDate.withDayOfMonth(1)
-            val dayOfWeek: Int = firstOfMonth.dayOfWeek.value
+            val firstOfMonth: LocalDateTime? = selectedDate.withDayOfMonth(1)
+            val dayOfWeek: Int? = firstOfMonth?.dayOfWeek?.value
 
-            for (i in 2 until daysInMonth + dayOfWeek + 1) {
+            for (i in 2 until daysInMonth + dayOfWeek!! + 1) {
                 if (i <= dayOfWeek) {
                     daysInMonthArray.add(null)
                 }
@@ -28,19 +28,14 @@ class CalendarUtils {
             return daysInMonthArray
         }
 
-        fun currentMonthFromDate(date: LocalDate): String {
+        fun currentMonthFromDate(date: LocalDateTime): String {
             val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MMMM yyyy")
             return date.format(formatter)
         }
 
-        fun formattedDate(date: LocalDate): String {
+        fun formattedDate(date: LocalDateTime): String {
             val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
             return date.format(formatter)
-        }
-
-        fun formattedTime(time: LocalTime): String {
-            val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss a")
-            return time.format(formatter)
         }
     }
 }
