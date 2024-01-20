@@ -36,6 +36,7 @@ class DayAdapter(var hours: List<Hour>): RecyclerView.Adapter<DayAdapter.DayHold
             timeTextView.text = "${this.hour.dateTime.hour}:00"
             if (this.hour.task != null) {
                 taskLinearLayout.visibility = View.VISIBLE
+                itemView.isEnabled = true
                 taskNameTextView.text = this.hour.task!!.name
                 val minuteStart = CalendarUtils.stringTime(this.hour.task!!.dateStart.minute)
                 val minuteFinish = CalendarUtils.stringTime(this.hour.task!!.dateFinish.minute)
@@ -43,7 +44,7 @@ class DayAdapter(var hours: List<Hour>): RecyclerView.Adapter<DayAdapter.DayHold
                         "${this.hour.task!!.dateFinish.hour}:$minuteFinish"
             } else {
                 taskLinearLayout.visibility = View.INVISIBLE
-                taskLinearLayout.isClickable = false
+                itemView.isEnabled = false
             }
         }
 

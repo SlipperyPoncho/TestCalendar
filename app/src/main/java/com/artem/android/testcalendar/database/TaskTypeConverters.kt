@@ -20,5 +20,4 @@ class TaskTypeConverters {
         return LocalDateTime.ofInstant(epochMilli?.let { Instant.ofEpochMilli(it) },
             ZoneId.systemDefault())
     }
-
 }
