@@ -2,24 +2,31 @@ package com.artem.android.testcalendar
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.artem.android.testcalendar.CalendarUtils.Companion.currentMonthFromDate
 import com.artem.android.testcalendar.CalendarUtils.Companion.daysInMonthArray
+import com.artem.android.testcalendar.Hour.Task.Companion.tasksList
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
+
+private const val TAG = "TaskListFragment"
+
 class CalendarFragment: Fragment(), OnItemListener {
 
-    interface Callbacks { fun onNewTaskPressed() }
+    interface Callbacks { fun onNewTaskPressed(taskId: Int) }
 
     private var callbacks: Callbacks? = null
     private lateinit var currentMonthTextView: TextView
@@ -29,6 +36,10 @@ class CalendarFragment: Fragment(), OnItemListener {
     private lateinit var nextMonthBtn: Button
     private lateinit var newTaskBtn: Button
     private var dayAdapter: DayAdapter? = DayAdapter(emptyList())
+
+    private val taskListViewModel: TaskListViewModel by lazy {
+        ViewModelProvider(this)[TaskListViewModel::class.java]
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -62,10 +73,27 @@ class CalendarFragment: Fragment(), OnItemListener {
         }
         newTaskBtn = view.findViewById(R.id.new_task_btn)
         newTaskBtn.setOnClickListener {
-            callbacks?.onNewTaskPressed()
+            val task = Hour.Task()
+            taskListViewModel.addTask(task)
+            callbacks?.onNewTaskPressed(task.id)
         }
         setView()
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        taskListViewModel.taskListLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                tasks -> tasks?.let {
+                    Log.i(TAG, "Got tasks ${tasks.size}")
+                    tasksList = tasks.toMutableList()
+                    setDayAdapter(Hour.setHours())
+                }
+            }
+        )
     }
 
     private fun setDayAdapter(hours: List<Hour>) {

@@ -1,24 +1,27 @@
 package com.artem.android.testcalendar
 
 import android.util.Range
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 data class Hour(var dateTime: LocalDateTime = LocalDateTime.now(),
                 var task: Task? = null) {
+    @Entity
     data class Task(
-        val id: Int = 0,
+        @PrimaryKey var id: Int = tasksList.lastIndex + 1,
         var name: String = "",
         var dateStart: LocalDateTime = LocalDateTime.now(),
-        var dateFinish: LocalDateTime = LocalDateTime.now(),
+        var dateFinish: LocalDateTime = LocalDateTime.now().plusHours(1),
         var description: String = "") {
         companion object {
-            val tasksList: ArrayList<Task> = arrayListOf()
+            var tasksList: MutableList<Task> = mutableListOf()
         }
     }
     companion object {
-        fun setHours(): ArrayList<Hour> {
-            val hoursList: ArrayList<Hour> = arrayListOf()
+        fun setHours(): List<Hour> {
+            val hoursList: MutableList<Hour> = mutableListOf()
             for (i in 0 until 24) {
                 val hour = Hour(LocalDateTime.of(CalendarUtils.selectedDate.toLocalDate(),
                         LocalTime.of(CalendarUtils.selectedDate.hour.plus(i),

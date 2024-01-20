@@ -10,13 +10,25 @@ import androidx.recyclerview.widget.RecyclerView
 
 class DayAdapter(var hours: List<Hour>): RecyclerView.Adapter<DayAdapter.DayHolder>() {
 
-    inner class DayHolder(view: View) : RecyclerView.ViewHolder(view) {
+    private var callbacks: CalendarFragment.Callbacks? = null
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        callbacks = recyclerView.context as CalendarFragment.Callbacks?
+    }
+
+    inner class DayHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var hour: Hour
+
         private val timeTextView: TextView = itemView.findViewById(R.id.time_task_text_view)
         private val taskLinearLayout: LinearLayout = itemView.findViewById(R.id.task_layout)
         private val taskNameTextView: TextView = itemView.findViewById(R.id.task_name_text_view)
         private val taskDateTextView: TextView = itemView.findViewById(R.id.task_date_text_view)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
 
         @SuppressLint("SetTextI18n")
         fun bind(hour: Hour) {
@@ -31,7 +43,12 @@ class DayAdapter(var hours: List<Hour>): RecyclerView.Adapter<DayAdapter.DayHold
                         "${this.hour.task!!.dateFinish.hour}:$minuteFinish"
             } else {
                 taskLinearLayout.visibility = View.INVISIBLE
+                taskLinearLayout.isClickable = false
             }
+        }
+
+        override fun onClick(v: View?) {
+            this.hour.task?.let { callbacks?.onNewTaskPressed(it.id) }
         }
     }
 

@@ -26,8 +26,8 @@ class MainActivity : AppCompatActivity(), CalendarFragment.Callbacks {
         }
     }
 
-    override fun onNewTaskPressed() {
-        val taskEditFragment = TaskEditFragment.newInstance()
+    override fun onNewTaskPressed(taskId: Int) {
+        val taskEditFragment = TaskEditFragment.newInstance(taskId)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, taskEditFragment)
             .addToBackStack(null)

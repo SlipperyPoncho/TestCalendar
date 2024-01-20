@@ -11,15 +11,20 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.artem.android.testcalendar.Hour.Task.Companion.tasksList
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 private const val REQUEST_TIME = 0
 private const val DIALOG_TIME = "DialogTime"
+private const val ARG_TASK_ID = "task_id"
 
 class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
 
+    private lateinit var task: Hour.Task
     private lateinit var taskNameEditText: EditText
     private lateinit var taskDateTextView: TextView
     private lateinit var taskStartTimeTextView: TextView
@@ -29,10 +34,18 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
     private lateinit var taskDescriptionEditText: EditText
     private lateinit var saveBtn: Button
     private lateinit var time: LocalTime
+    private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+    private val taskEditViewModel: TaskEditViewModel by lazy {
+        ViewModelProvider(this)[TaskEditViewModel::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         time = LocalTime.now()
+        task = Hour.Task()
+        val taskId: Int = arguments?.getSerializable(ARG_TASK_ID) as Int
+        taskEditViewModel.loadTask(taskId)
     }
 
     override fun onCreateView(
@@ -52,6 +65,19 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        taskEditViewModel.taskLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                task -> task?.let {
+                    this.task = task
+                    updateUI()
+                }
+            }
+        )
+    }
+
     @SuppressLint("SetTextI18n")
     override fun onStart() {
         super.onStart()
@@ -60,6 +86,7 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
         val taskNameWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                task.name = taskNameEditText.text.toString()
                 saveBtn.isEnabled = taskDescriptionEditText.text.toString() != "" &&
                         taskNameEditText.text.toString() != ""
             }
@@ -70,6 +97,7 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
         val taskDescriptionWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                task.description = taskDescriptionEditText.text.toString()
                 saveBtn.isEnabled = taskNameEditText.text.toString() != "" &&
                         taskDescriptionEditText.text.toString() != ""
             }
@@ -78,24 +106,14 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
         taskDescriptionEditText.addTextChangedListener(taskDescriptionWatcher)
 
         saveBtn.setOnClickListener {
-            val taskName: String = taskNameEditText.text.toString()
-            val formatter = DateTimeFormatter.ofPattern("HH:mm")
-
-            val newTask = Hour.Task(
-                Hour.Task.tasksList.lastIndex + 1,
-                taskName,
-                LocalDateTime.of(
-                    CalendarUtils.selectedDate.toLocalDate(),
-                    LocalTime.parse(pickStartTimeBtn.text, formatter)
-                ),
-                LocalDateTime.of(
-                    CalendarUtils.selectedDate.toLocalDate(),
-                    LocalTime.parse(pickFinishTimeBtn.text, formatter)
-                ),
-                taskDescriptionEditText.text.toString()
-            )
-
-            Hour.Task.tasksList.add(newTask)
+            if (task.id < tasksList.lastIndex + 1) {
+                tasksList.removeAt(task.id)
+                tasksList.add(task)
+            } else {
+                task.id = tasksList.lastIndex + 1
+                tasksList.add(task)
+            }
+            taskEditViewModel.saveTask(task)
             activity?.onBackPressedDispatcher?.onBackPressed()
         }
 
@@ -117,22 +135,45 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
     }
 
     @SuppressLint("SetTextI18n")
+    private fun updateUI() {
+        taskNameEditText.setText(task.name)
+        pickStartTimeBtn.text = "${CalendarUtils.stringTime(task.dateStart.hour)}:" +
+                CalendarUtils.stringTime(task.dateStart.minute)
+        pickFinishTimeBtn.text = "${CalendarUtils.stringTime(task.dateFinish.hour)}:" +
+                CalendarUtils.stringTime(task.dateFinish.minute)
+        taskDescriptionEditText.setText(task.description)
+    }
+
+    @SuppressLint("SetTextI18n")
     override fun onTimeSelected(time: LocalTime, flag: String) {
         if (flag == "start") {
             pickStartTimeBtn.text = CalendarUtils.stringTime(time.hour) + ":" +
                     CalendarUtils.stringTime(time.minute)
+            task.dateStart = LocalDateTime.of(
+                CalendarUtils.selectedDate.toLocalDate(),
+                LocalTime.parse(pickStartTimeBtn.text, formatter)
+            )
             pickFinishTimeBtn.text = "${CalendarUtils.stringTime(
                 pickStartTimeBtn.text.substring(0,2).toInt() + 1)}:" +
                     pickStartTimeBtn.text.substring(3,5)
+            task.dateFinish = LocalDateTime.of(
+                CalendarUtils.selectedDate.toLocalDate(),
+                LocalTime.parse(pickFinishTimeBtn.text, formatter)
+            )
         } else if (flag == "finish") {
             pickFinishTimeBtn.text = "${CalendarUtils.stringTime(time.hour)}:" +
                     CalendarUtils.stringTime(time.minute)
+            task.dateFinish = LocalDateTime.of(
+                CalendarUtils.selectedDate.toLocalDate(),
+                LocalTime.parse(pickFinishTimeBtn.text, formatter)
+            )
         }
     }
 
     companion object {
-        fun newInstance(): TaskEditFragment {
-            return TaskEditFragment()
+        fun newInstance(taskId: Int): TaskEditFragment {
+            val args = Bundle().apply { putSerializable(ARG_TASK_ID, taskId) }
+            return TaskEditFragment().apply { arguments = args }
         }
     }
 }
