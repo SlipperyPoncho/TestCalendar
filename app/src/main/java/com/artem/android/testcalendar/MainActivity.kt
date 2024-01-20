@@ -3,9 +3,13 @@ package com.artem.android.testcalendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-// TODO Landscape view (Calendar has fixed height), Add ViewModel to stay on selected date,
-//  Add JSON Task, start and finish EditText can get wrong input (maybe add всплывашки для выбора
-//  часа и минуты), Add task description to TaskEditFragment, organize code
+// TODO при добавлении задачи в тот час где уже есть задача в recycler старая заменяется на новую но
+//  в tasksList остаются обе, надо либо заменять в tasksList либо сделать возможность добавлять
+//  несколько тасков на один час.
+// TODO Добавить несколько тасков при помощи JSON
+// TODO Добавить возможность редакитровать задачу по нажатию на соответствующий элемент recycler
+// TODO Room, JUnit, ViewModel, Убрать фиксированнй размер у календаря (календарь занимает весь
+//  экран в landscape)
 
 class MainActivity : AppCompatActivity(), CalendarFragment.Callbacks {
 

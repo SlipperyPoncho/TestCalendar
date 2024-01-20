@@ -25,9 +25,12 @@ data class Hour(var dateTime: LocalDateTime = LocalDateTime.now(),
                             CalendarUtils.selectedDate.minute)))
                 for (task in Task.tasksList) {
                     if (task.dateStart.toLocalDate() == hour.dateTime.toLocalDate()) {
-                        val range: Range<Int> = Range.create(task.dateStart.hour, task.dateFinish.hour)
+                        var range: Range<Int> = Range.create(task.dateStart.hour, task.dateFinish.hour)
+                        if (task.dateFinish.minute == 0) {
+                            range = Range.create(range.lower, range.upper.minus(1))
+                        }
                         if (range.contains(hour.dateTime.hour)) {
-                            hour.task = task
+                                hour.task = task
                         }
                     }
                 }
