@@ -1,15 +1,20 @@
 package com.artem.android.testcalendar
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -42,10 +47,12 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         time = LocalTime.now()
         task = Hour.Task()
         val taskId: Int = arguments?.getSerializable(ARG_TASK_ID) as Int
         taskEditViewModel.loadTask(taskId)
+        activity?.onBackPressedDispatcher?.addCallback(onBackInvokedCallback)
     }
 
     override fun onCreateView(
@@ -111,10 +118,18 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
                 tasksList.add(task)
             } else {
                 task.id = tasksList.lastIndex + 1
+                task.dateStart = LocalDateTime.of(
+                    CalendarUtils.selectedDate.toLocalDate(),
+                    LocalTime.parse(pickStartTimeBtn.text, formatter)
+                )
+                task.dateFinish = LocalDateTime.of(
+                    CalendarUtils.selectedDate.toLocalDate(),
+                    LocalTime.parse(pickFinishTimeBtn.text, formatter)
+                )
                 tasksList.add(task)
             }
             taskEditViewModel.saveTask(task)
-            activity?.onBackPressedDispatcher?.onBackPressed()
+            fragmentManager?.popBackStack()
         }
 
         pickStartTimeBtn.setOnClickListener {
@@ -131,6 +146,55 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
                 setTargetFragment(this@TaskEditFragment, REQUEST_TIME)
                 show(this@TaskEditFragment.requireFragmentManager(), DIALOG_TIME)
             }
+        }
+    }
+
+    private val onBackInvokedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (task.name == "" || task.description == "") {
+                val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+                builder.setMessage("If you return task info would be lost")
+                    .setTitle("Warning!")
+                    .setPositiveButton("Ok") { _, _ ->
+                        run {
+                            taskEditViewModel.deleteTask(task)
+                            fragmentManager?.popBackStack()
+                        }
+                    }
+                    .setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.cancel()
+                    }
+                    .show()
+            } else {
+                fragmentManager?.popBackStack()
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_task_edit, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.delete_task -> {
+                val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+                builder.setMessage("Are you sure you want to delete this task?")
+                    .setTitle("Warning!")
+                    .setPositiveButton("Yes") { _, _ ->
+                        run {
+                            taskEditViewModel.deleteTask(task)
+                            fragmentManager?.popBackStack()
+                        }
+                    }
+                    .setNegativeButton("No") { dialog, _ ->
+                        dialog.cancel()
+                    }
+                    .show()
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
     }
 

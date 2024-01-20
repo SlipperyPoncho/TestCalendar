@@ -20,4 +20,8 @@ class TaskEditViewModel: ViewModel() {
     fun saveTask(task: Hour.Task) {
         taskRepository.updateTask(task)
     }
+
+    fun deleteTask(task: Hour.Task) {
+        taskRepository.deleteTask(task)
+    }
 }

@@ -32,6 +32,11 @@ class TaskRepository private constructor(context: Context) {
             taskDao.addTask(task)
         }
     }
+    fun deleteTask(task: Hour.Task) {
+        executor.execute {
+            taskDao.deleteTask(task)
+        }
+    }
 
     companion object {
         private var INSTANCE: TaskRepository? = null

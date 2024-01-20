@@ -2,6 +2,7 @@ package com.artem.android.testcalendar.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -17,4 +18,6 @@ interface TaskDao {
     fun updateTask(task: Hour.Task)
     @Insert
     fun addTask(task: Hour.Task)
+    @Delete
+    fun deleteTask(task: Hour.Task)
 }
