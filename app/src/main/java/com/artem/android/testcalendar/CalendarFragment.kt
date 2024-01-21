@@ -14,19 +14,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.artem.android.testcalendar.CalendarUtils.Companion.currentMonthFromDate
-import com.artem.android.testcalendar.CalendarUtils.Companion.daysInMonthArray
-import com.artem.android.testcalendar.Hour.Task.Companion.tasksList
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.UUID
 
-private const val TAG = "TaskListFragment"
-
 class CalendarFragment: Fragment(), OnItemListener {
 
-    interface Callbacks { fun onNewTaskPressed(taskId: UUID) }
+    interface Callbacks { fun onNewTaskPressed(taskId: UUID, selectedDate: LocalDateTime) }
 
     private var callbacks: Callbacks? = null
     private var dayAdapter: DayAdapter? = DayAdapter(emptyList())
@@ -37,6 +32,7 @@ class CalendarFragment: Fragment(), OnItemListener {
     private lateinit var nextMonthBtn: Button
     private lateinit var newTaskBtn: Button
     private var taskExist = false
+    private var tasksList: MutableList<Task> = mutableListOf()
 
     private val taskListViewModel: TaskListViewModel by lazy {
         ViewModelProvider(this)[TaskListViewModel::class.java]
@@ -49,7 +45,7 @@ class CalendarFragment: Fragment(), OnItemListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        CalendarUtils.selectedDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(0,0))
+        taskListViewModel.selectedDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(0,0))
     }
 
     override fun onCreateView(
@@ -64,19 +60,19 @@ class CalendarFragment: Fragment(), OnItemListener {
         dayRecyclerView.layoutManager = LinearLayoutManager(context)
         prevMonthBtn = view.findViewById(R.id.prev_month_btn)
         prevMonthBtn.setOnClickListener{
-            CalendarUtils.selectedDate = CalendarUtils.selectedDate.minusMonths(1)
+            taskListViewModel.selectedDate = taskListViewModel.selectedDate.minusMonths(1)
             setView()
         }
         nextMonthBtn = view.findViewById(R.id.next_month_btn)
         nextMonthBtn.setOnClickListener{
-            CalendarUtils.selectedDate = CalendarUtils.selectedDate.plusMonths(1)
+            taskListViewModel.selectedDate = taskListViewModel.selectedDate.plusMonths(1)
             setView()
         }
         newTaskBtn = view.findViewById(R.id.new_task_btn)
         newTaskBtn.setOnClickListener {
-            val task = Hour.Task()
+            val task = Task()
             taskListViewModel.addTask(task)
-            callbacks?.onNewTaskPressed(task.id)
+            callbacks?.onNewTaskPressed(task.id, taskListViewModel.selectedDate)
         }
         setView()
         return view
@@ -101,7 +97,7 @@ class CalendarFragment: Fragment(), OnItemListener {
                         if (!taskExist) taskListViewModel.addTask(taskFromJSON)
                     }
                     tasksList = tasks.toMutableList()
-                    setDayAdapter(Hour.setHours())
+                    setDayAdapter(Hour.setHours(taskListViewModel.selectedDate, tasksList))
                 }
             }
         )
@@ -118,21 +114,22 @@ class CalendarFragment: Fragment(), OnItemListener {
     }
 
     private fun setView() {
-        currentMonthTextView.text = currentMonthFromDate(CalendarUtils.selectedDate)
-        val daysInMonth: ArrayList<LocalDate?> = daysInMonthArray(CalendarUtils.selectedDate)
-        val adapter = CalendarAdapter(daysInMonth, this)
+        currentMonthTextView.text = taskListViewModel.currentMonthFromDate(taskListViewModel.selectedDate)
+        val daysInMonth: ArrayList<LocalDate?> = taskListViewModel.daysInMonthArray(taskListViewModel.selectedDate)
+        val adapter = CalendarAdapter(taskListViewModel.selectedDate, daysInMonth, this)
         val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(context, 7)
         calendarRecyclerView.layoutManager = layoutManager
         calendarRecyclerView.adapter = adapter
-        setDayAdapter(Hour.setHours())
+        setDayAdapter(Hour.setHours(taskListViewModel.selectedDate, tasksList))
     }
 
     override fun onItemClick(pos: Int, date: LocalDate) {
-        CalendarUtils.selectedDate = LocalDateTime.of(date, LocalTime.of(0,0))
+        taskListViewModel.selectedDate = LocalDateTime.of(date, LocalTime.of(0,0))
         setView()
     }
 
     companion object {
+        private const val TAG = "TaskListFragment"
         fun newInstance(): CalendarFragment {
             return CalendarFragment()
         }

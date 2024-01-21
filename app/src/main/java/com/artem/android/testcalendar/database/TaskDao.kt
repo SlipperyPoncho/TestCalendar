@@ -6,19 +6,19 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.artem.android.testcalendar.Hour
+import com.artem.android.testcalendar.Task
 import java.util.UUID
 
 @Dao
 interface TaskDao {
     @Query("SELECT * FROM task")
-    fun getTasks(): LiveData<List<Hour.Task>>
+    fun getTasks(): LiveData<List<Task>>
     @Query("SELECT * FROM task WHERE id=(:id)")
-    fun getTask(id: UUID): LiveData<Hour.Task?>
+    fun getTask(id: UUID): LiveData<Task?>
     @Update
-    fun updateTask(task: Hour.Task)
+    fun updateTask(task: Task)
     @Insert
-    fun addTask(task: Hour.Task)
+    fun addTask(task: Task)
     @Delete
-    fun deleteTask(task: Hour.Task)
+    fun deleteTask(task: Task)
 }

@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class DayAdapter(var hours: List<Hour>): RecyclerView.Adapter<DayAdapter.DayHolder>() {
+class DayAdapter(private var hours: List<Hour>): RecyclerView.Adapter<DayAdapter.DayHolder>() {
 
     private var callbacks: CalendarFragment.Callbacks? = null
 
@@ -34,13 +34,14 @@ class DayAdapter(var hours: List<Hour>): RecyclerView.Adapter<DayAdapter.DayHold
         fun bind(hour: Hour) {
             this.hour = hour
             timeTextView.text = "${this.hour.dateTime.hour}:00"
-            if (this.hour.task != null) {
+            val currentTask = this.hour.task
+            if (currentTask != null) {
                 taskLinearLayout.visibility = View.VISIBLE
                 itemView.isEnabled = true
-                taskNameTextView.text = this.hour.task!!.name
-                val minuteStart = CalendarUtils.stringTime(this.hour.task!!.dateStart.minute)
-                val minuteFinish = CalendarUtils.stringTime(this.hour.task!!.dateFinish.minute)
-                taskDateTextView.text = "${this.hour.task!!.dateStart.hour}:$minuteStart - " +
+                taskNameTextView.text = currentTask.name
+                val minuteStart = stringTime(currentTask.dateStart.minute)
+                val minuteFinish = stringTime(currentTask.dateFinish.minute)
+                taskDateTextView.text = "${currentTask.dateStart.hour}:$minuteStart - " +
                         "${this.hour.task!!.dateFinish.hour}:$minuteFinish"
             } else {
                 taskLinearLayout.visibility = View.INVISIBLE
@@ -49,7 +50,7 @@ class DayAdapter(var hours: List<Hour>): RecyclerView.Adapter<DayAdapter.DayHold
         }
 
         override fun onClick(v: View?) {
-            this.hour.task?.let { callbacks?.onNewTaskPressed(it.id) }
+            this.hour.task?.let { callbacks?.onNewTaskPressed(it.id, it.dateStart) }
         }
     }
 
@@ -64,5 +65,13 @@ class DayAdapter(var hours: List<Hour>): RecyclerView.Adapter<DayAdapter.DayHold
     override fun onBindViewHolder(holder: DayHolder, position: Int) {
         val hour = hours[position]
         holder.bind(hour)
+    }
+
+    fun stringTime(time: Int): String {
+        var timeStr = time.toString()
+        if (timeStr.toInt() < 10) {
+            timeStr = "0$timeStr"
+        }
+        return timeStr
     }
 }

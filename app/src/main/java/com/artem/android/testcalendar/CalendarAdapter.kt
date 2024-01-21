@@ -7,15 +7,18 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.time.LocalDate
+import java.time.LocalDateTime
 
-class CalendarAdapter(days: ArrayList<LocalDate?>, onItemListener: OnItemListener):
+class CalendarAdapter(date: LocalDateTime, days: ArrayList<LocalDate?>, onItemListener: OnItemListener):
     RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
 
     private val days: ArrayList<LocalDate?>
+    private val date: LocalDateTime
     private val onItemListener: OnItemListener
 
     init {
         this.days = days
+        this.date = date
         this.onItemListener = onItemListener
     }
 
@@ -53,8 +56,7 @@ class CalendarAdapter(days: ArrayList<LocalDate?>, onItemListener: OnItemListene
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val day = days[position]
-        if (day == LocalDate.of(CalendarUtils.selectedDate.year, CalendarUtils.selectedDate.month,
-                CalendarUtils.selectedDate.dayOfMonth)) {
+        if (day == LocalDate.of(date.year, date.month, date.dayOfMonth)) {
             holder.itemView.setBackgroundColor(Color.argb(95,84,152,68))
         }
         if (day != null) {

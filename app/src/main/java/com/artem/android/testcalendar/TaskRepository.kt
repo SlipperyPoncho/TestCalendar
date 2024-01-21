@@ -8,8 +8,6 @@ import java.lang.IllegalStateException
 import java.util.UUID
 import java.util.concurrent.Executors
 
-private const val DATABASE_NAME = "task-database"
-
 class TaskRepository private constructor(context: Context) {
 
     private val database: TaskDatabase = Room.databaseBuilder(
@@ -21,25 +19,26 @@ class TaskRepository private constructor(context: Context) {
     private val taskDao = database.taskDao()
     private val executor = Executors.newSingleThreadExecutor()
 
-    fun getTasks(): LiveData<List<Hour.Task>> = taskDao.getTasks()
-    fun getTask(id: UUID): LiveData<Hour.Task?> = taskDao.getTask(id)
-    fun updateTask(task: Hour.Task) {
+    fun getTasks(): LiveData<List<Task>> = taskDao.getTasks()
+    fun getTask(id: UUID): LiveData<Task?> = taskDao.getTask(id)
+    fun updateTask(task: Task) {
         executor.execute {
             taskDao.updateTask(task)
         }
     }
-    fun addTask(task: Hour.Task) {
+    fun addTask(task: Task) {
         executor.execute {
             taskDao.addTask(task)
         }
     }
-    fun deleteTask(task: Hour.Task) {
+    fun deleteTask(task: Task) {
         executor.execute {
             taskDao.deleteTask(task)
         }
     }
 
     companion object {
+        private const val DATABASE_NAME = "task-database"
         private var INSTANCE: TaskRepository? = null
 
         fun initialize(context: Context) {
