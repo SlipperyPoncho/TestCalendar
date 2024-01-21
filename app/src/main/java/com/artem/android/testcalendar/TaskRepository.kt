@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.artem.android.testcalendar.database.TaskDatabase
 import java.lang.IllegalStateException
+import java.util.UUID
 import java.util.concurrent.Executors
 
 private const val DATABASE_NAME = "task-database"
@@ -21,7 +22,7 @@ class TaskRepository private constructor(context: Context) {
     private val executor = Executors.newSingleThreadExecutor()
 
     fun getTasks(): LiveData<List<Hour.Task>> = taskDao.getTasks()
-    fun getTask(id: Int): LiveData<Hour.Task?> = taskDao.getTask(id)
+    fun getTask(id: UUID): LiveData<Hour.Task?> = taskDao.getTask(id)
     fun updateTask(task: Hour.Task) {
         executor.execute {
             taskDao.updateTask(task)

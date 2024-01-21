@@ -23,7 +23,7 @@
             tools:ignore="Suspicious0dp"
             android:layout_weight="1"
             android:text="@string/prev_month"
-            android:textColor="@color/white"
+            android:textColor="@color/my_light_primary"
             android:background="@null"
             android:textStyle="bold"
             android:textSize="20sp"/>
@@ -44,7 +44,7 @@
             tools:ignore="Suspicious0dp"
             android:layout_weight="1"
             android:text="@string/next_month"
-            android:textColor="@color/white"
+            android:textColor="@color/my_light_primary"
             android:background="@null"
             android:textStyle="bold"
             android:textSize="20sp"/>
@@ -123,7 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/new_task_text"
-        android:textColor="@color/white"
+        android:textColor="@color/my_light_primary"
         android:background="@null"
         android:textStyle="bold"
         android:textSize="20sp"/>

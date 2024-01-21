@@ -5,12 +5,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.UUID
 
 data class Hour(var dateTime: LocalDateTime = LocalDateTime.now(),
                 var task: Task? = null) {
     @Entity
     data class Task(
-        @PrimaryKey var id: Int = tasksList.lastIndex + 1,
+        @PrimaryKey var id: UUID = UUID.randomUUID(),
         var name: String = "",
         var dateStart: LocalDateTime = LocalDateTime.now(),
         var dateFinish: LocalDateTime = LocalDateTime.now().plusHours(1),

@@ -20,22 +20,23 @@ import com.artem.android.testcalendar.Hour.Task.Companion.tasksList
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-
+import java.util.UUID
 
 private const val TAG = "TaskListFragment"
 
 class CalendarFragment: Fragment(), OnItemListener {
 
-    interface Callbacks { fun onNewTaskPressed(taskId: Int) }
+    interface Callbacks { fun onNewTaskPressed(taskId: UUID) }
 
     private var callbacks: Callbacks? = null
+    private var dayAdapter: DayAdapter? = DayAdapter(emptyList())
     private lateinit var currentMonthTextView: TextView
     private lateinit var calendarRecyclerView: RecyclerView
     private lateinit var dayRecyclerView: RecyclerView
     private lateinit var prevMonthBtn: Button
     private lateinit var nextMonthBtn: Button
     private lateinit var newTaskBtn: Button
-    private var dayAdapter: DayAdapter? = DayAdapter(emptyList())
+    private var taskExist = false
 
     private val taskListViewModel: TaskListViewModel by lazy {
         ViewModelProvider(this)[TaskListViewModel::class.java]
@@ -89,6 +90,16 @@ class CalendarFragment: Fragment(), OnItemListener {
             Observer {
                 tasks -> tasks?.let {
                     Log.i(TAG, "Got tasks ${tasks.size}")
+                    val taskFromJSON = context?.let { it1 -> taskListViewModel.taskFromJSON(it1) }
+                    if (taskFromJSON != null) {
+                        for (t in tasks) {
+                            if (t.id == taskFromJSON.id) {
+                                taskExist = true
+                                break
+                            }
+                        }
+                        if (!taskExist) taskListViewModel.addTask(taskFromJSON)
+                    }
                     tasksList = tasks.toMutableList()
                     setDayAdapter(Hour.setHours())
                 }
@@ -120,7 +131,6 @@ class CalendarFragment: Fragment(), OnItemListener {
         CalendarUtils.selectedDate = LocalDateTime.of(date, LocalTime.of(0,0))
         setView()
     }
-
 
     companion object {
         fun newInstance(): CalendarFragment {

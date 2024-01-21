@@ -4,20 +4,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
+import java.util.UUID
 
 class TaskEditViewModel: ViewModel() {
     private val taskRepository = TaskRepository.get()
-    private val taskIdLiveData = MutableLiveData<Int>()
+    private val taskIdLiveData = MutableLiveData<UUID>()
 
     var taskLiveData: LiveData<Hour.Task?> = taskIdLiveData.switchMap {
         taskId -> taskRepository.getTask(taskId)
     }
 
-    fun loadTask(taskId: Int) {
+    fun loadTask(taskId: UUID) {
         taskIdLiveData.value = taskId
     }
 
-    fun saveTask(task: Hour.Task) {
+    fun updateTask(task: Hour.Task) {
         taskRepository.updateTask(task)
     }
 

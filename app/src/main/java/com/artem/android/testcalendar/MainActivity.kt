@@ -2,14 +2,7 @@ package com.artem.android.testcalendar
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-
-// TODO при добавлении задачи в тот час где уже есть задача в recycler старая заменяется на новую но
-//  в tasksList остаются обе, надо либо заменять в tasksList либо сделать возможность добавлять
-//  несколько тасков на один час.
-// TODO Добавить несколько тасков при помощи JSON
-// TODO Добавить возможность редакитровать задачу по нажатию на соответствующий элемент recycler
-// TODO Room, JUnit, ViewModel, Убрать фиксированнй размер у календаря (календарь занимает весь
-//  экран в landscape)
+import java.util.UUID
 
 class MainActivity : AppCompatActivity(), CalendarFragment.Callbacks {
 
@@ -26,7 +19,7 @@ class MainActivity : AppCompatActivity(), CalendarFragment.Callbacks {
         }
     }
 
-    override fun onNewTaskPressed(taskId: Int) {
+    override fun onNewTaskPressed(taskId: UUID) {
         val taskEditFragment = TaskEditFragment.newInstance(taskId)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, taskEditFragment)

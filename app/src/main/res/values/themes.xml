@@ -1,10 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.TestCalendar" parent="Theme.Material3.DayNight">
+    <style name="Base.Theme.TestCalendar" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your light theme here. -->
          <item name="colorPrimary">@color/my_light_primary</item>
-         <item name="android:itemBackground">@color/my_light_primary</item>
+         <item name="android:actionBarStyle">@style/MyActionBar</item>
     </style>
-
     <style name="Theme.TestCalendar" parent="Base.Theme.TestCalendar" />
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/my_light_primary</item>
+    </style>
 </resources>

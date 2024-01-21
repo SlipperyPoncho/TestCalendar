@@ -18,10 +18,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.artem.android.testcalendar.Hour.Task.Companion.tasksList
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 private const val REQUEST_TIME = 0
 private const val DIALOG_TIME = "DialogTime"
@@ -50,7 +50,7 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
         setHasOptionsMenu(true)
         time = LocalTime.now()
         task = Hour.Task()
-        val taskId: Int = arguments?.getSerializable(ARG_TASK_ID) as Int
+        val taskId: UUID = arguments?.getSerializable(ARG_TASK_ID) as UUID
         taskEditViewModel.loadTask(taskId)
         activity?.onBackPressedDispatcher?.addCallback(onBackInvokedCallback)
     }
@@ -113,22 +113,15 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
         taskDescriptionEditText.addTextChangedListener(taskDescriptionWatcher)
 
         saveBtn.setOnClickListener {
-            if (task.id < tasksList.lastIndex + 1) {
-                tasksList.removeAt(task.id)
-                tasksList.add(task)
-            } else {
-                task.id = tasksList.lastIndex + 1
-                task.dateStart = LocalDateTime.of(
-                    CalendarUtils.selectedDate.toLocalDate(),
-                    LocalTime.parse(pickStartTimeBtn.text, formatter)
-                )
-                task.dateFinish = LocalDateTime.of(
-                    CalendarUtils.selectedDate.toLocalDate(),
-                    LocalTime.parse(pickFinishTimeBtn.text, formatter)
-                )
-                tasksList.add(task)
-            }
-            taskEditViewModel.saveTask(task)
+            task.dateStart = LocalDateTime.of(
+                CalendarUtils.selectedDate.toLocalDate(),
+                LocalTime.parse(pickStartTimeBtn.text, formatter)
+            )
+            task.dateFinish = LocalDateTime.of(
+                CalendarUtils.selectedDate.toLocalDate(),
+                LocalTime.parse(pickFinishTimeBtn.text, formatter)
+            )
+            taskEditViewModel.updateTask(task)
             fragmentManager?.popBackStack()
         }
 
@@ -235,7 +228,7 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
     }
 
     companion object {
-        fun newInstance(taskId: Int): TaskEditFragment {
+        fun newInstance(taskId: UUID): TaskEditFragment {
             val args = Bundle().apply { putSerializable(ARG_TASK_ID, taskId) }
             return TaskEditFragment().apply { arguments = args }
         }
