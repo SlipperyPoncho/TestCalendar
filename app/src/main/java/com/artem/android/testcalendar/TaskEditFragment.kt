@@ -118,14 +118,14 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
                 LocalTime.parse(pickFinishTimeBtn.text, taskEditViewModel.formatter)
             )
             taskEditViewModel.updateTask(taskEditViewModel.task)
-            fragmentManager?.popBackStack()
+            parentFragmentManager.popBackStack()
         }
 
         pickStartTimeBtn.setOnClickListener {
             TimePickerFragment.newInstance(LocalTime.parse(pickStartTimeBtn.text,
                 DateTimeFormatter.ofPattern("HH:mm")), "start").apply {
                 setTargetFragment(this@TaskEditFragment, REQUEST_TIME)
-                show(this@TaskEditFragment.requireFragmentManager(), DIALOG_TIME)
+                show(this@TaskEditFragment.parentFragmentManager, DIALOG_TIME)
             }
         }
 
@@ -133,7 +133,7 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
             TimePickerFragment.newInstance(LocalTime.parse(pickFinishTimeBtn.text,
                 DateTimeFormatter.ofPattern("HH:mm")), "finish").apply {
                 setTargetFragment(this@TaskEditFragment, REQUEST_TIME)
-                show(this@TaskEditFragment.requireFragmentManager(), DIALOG_TIME)
+                show(this@TaskEditFragment.parentFragmentManager, DIALOG_TIME)
             }
         }
     }
@@ -147,7 +147,7 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
                     .setPositiveButton("Ok") { _, _ ->
                         run {
                             taskEditViewModel.deleteTask(taskEditViewModel.task)
-                            fragmentManager?.popBackStack()
+                            parentFragmentManager.popBackStack()
                         }
                     }
                     .setNegativeButton("Cancel") { dialog, _ ->
@@ -155,7 +155,7 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
                     }
                     .show()
             } else {
-                fragmentManager?.popBackStack()
+                parentFragmentManager.popBackStack()
             }
         }
     }
@@ -174,7 +174,7 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
                     .setPositiveButton("Yes") { _, _ ->
                         run {
                             taskEditViewModel.deleteTask(taskEditViewModel.task)
-                            fragmentManager?.popBackStack()
+                            parentFragmentManager.popBackStack()
                         }
                     }
                     .setNegativeButton("No") { dialog, _ ->
