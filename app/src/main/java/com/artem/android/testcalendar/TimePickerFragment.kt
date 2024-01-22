@@ -8,22 +8,19 @@ import androidx.fragment.app.DialogFragment
 import java.time.LocalTime
 
 class TimePickerFragment: DialogFragment() {
-    interface Callbacks {
-        fun onTimeSelected(time: LocalTime, flag: String)
-    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val flag = arguments?.getSerializable(ARG_FLAG) as String
         val time = arguments?.getSerializable(ARG_TIME) as LocalTime
 
         val timeListener = TimePickerDialog.OnTimeSetListener {
             _: TimePicker, hour: Int, minute: Int ->
             val resultTime: LocalTime = LocalTime.of(hour, minute)
 
-            targetFragment.let {
-                fragment -> (fragment as Callbacks).onTimeSelected(resultTime, flag)
+            val result = Bundle().apply {
+                putSerializable("bundleKey", resultTime)
             }
+            parentFragmentManager.setFragmentResult("requestKey", result)
         }
 
         return TimePickerDialog(
@@ -37,11 +34,9 @@ class TimePickerFragment: DialogFragment() {
 
     companion object {
         private const val ARG_TIME = "time"
-        private const val ARG_FLAG = "flag"
 
-        fun newInstance(time: LocalTime, flag: String): TimePickerFragment {
-            val args = Bundle().apply { putSerializable(ARG_TIME, time)
-            putSerializable(ARG_FLAG, flag)}
+        fun newInstance(time: LocalTime): TimePickerFragment {
+            val args = Bundle().apply { putSerializable(ARG_TIME, time) }
             return TimePickerFragment().apply { arguments = args }
         }
     }

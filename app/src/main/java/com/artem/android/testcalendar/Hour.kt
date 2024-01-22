@@ -27,5 +27,13 @@ data class Hour(var dateTime: LocalDateTime = LocalDateTime.now(),
             }
             return hoursList
         }
+
+        fun stringTime(time: Int): String {
+            var timeStr = time.toString()
+            if (timeStr.toInt() < 10) {
+                timeStr = "0$timeStr"
+            }
+            return timeStr
+        }
     }
 }

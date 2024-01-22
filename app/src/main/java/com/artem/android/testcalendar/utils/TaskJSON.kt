@@ -2,6 +2,7 @@ package com.artem.android.testcalendar.utils
 
 import com.google.gson.annotations.SerializedName
 
+// Task from json is displayed on 21st January
 data class TaskJSON(
     var id: String = "",
     var name: String = "",

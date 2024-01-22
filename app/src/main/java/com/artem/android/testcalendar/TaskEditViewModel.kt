@@ -34,12 +34,4 @@ class TaskEditViewModel: ViewModel() {
         val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
         return date.format(formatter)
     }
-
-    fun stringTime(time: Int): String {
-        var timeStr = time.toString()
-        if (timeStr.toInt() < 10) {
-            timeStr = "0$timeStr"
-        }
-        return timeStr
-    }
 }

@@ -18,12 +18,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.artem.android.testcalendar.Hour.Companion.stringTime
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 
-class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
+class TaskEditFragment: Fragment() {
 
     private lateinit var taskNameEditText: EditText
     private lateinit var taskDateTextView: TextView
@@ -33,7 +33,6 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
     private lateinit var pickFinishTimeBtn: Button
     private lateinit var taskDescriptionEditText: EditText
     private lateinit var saveBtn: Button
-    private lateinit var time: LocalTime
     private lateinit var selectedDate: LocalDateTime
 
     private val taskEditViewModel: TaskEditViewModel by lazy {
@@ -43,7 +42,6 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        time = LocalTime.now()
         taskEditViewModel.task = Task()
         val taskId: UUID = arguments?.getSerializable(ARG_TASK_ID) as UUID
         selectedDate = arguments?.getSerializable(ARG_SELECTED_DATE) as LocalDateTime
@@ -122,19 +120,25 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
         }
 
         pickStartTimeBtn.setOnClickListener {
-            TimePickerFragment.newInstance(LocalTime.parse(pickStartTimeBtn.text,
-                DateTimeFormatter.ofPattern("HH:mm")), "start").apply {
-                setTargetFragment(this@TaskEditFragment, REQUEST_TIME)
-                show(this@TaskEditFragment.parentFragmentManager, DIALOG_TIME)
+            childFragmentManager.setFragmentResultListener("requestKey", viewLifecycleOwner) {
+                _, bundle ->
+                    val result = bundle.getSerializable("bundleKey") as LocalTime
+                    taskEditViewModel.task.dateStart = LocalDateTime.of(selectedDate.toLocalDate(), result)
+                    updateUI()
             }
+            val showTime = TimePickerFragment.newInstance(taskEditViewModel.task.dateStart.toLocalTime())
+            showTime.show(this@TaskEditFragment.childFragmentManager, DIALOG_TIME)
         }
 
         pickFinishTimeBtn.setOnClickListener {
-            TimePickerFragment.newInstance(LocalTime.parse(pickFinishTimeBtn.text,
-                DateTimeFormatter.ofPattern("HH:mm")), "finish").apply {
-                setTargetFragment(this@TaskEditFragment, REQUEST_TIME)
-                show(this@TaskEditFragment.parentFragmentManager, DIALOG_TIME)
+            childFragmentManager.setFragmentResultListener("requestKey", viewLifecycleOwner) {
+                    _, bundle ->
+                val result = bundle.getSerializable("bundleKey") as LocalTime
+                taskEditViewModel.task.dateFinish = LocalDateTime.of(selectedDate.toLocalDate(), result)
+                updateUI()
             }
+            val showTime = TimePickerFragment.newInstance(taskEditViewModel.task.dateFinish.toLocalTime())
+            showTime.show(this@TaskEditFragment.childFragmentManager, DIALOG_TIME)
         }
     }
 
@@ -190,29 +194,14 @@ class TaskEditFragment: Fragment(), TimePickerFragment.Callbacks {
     @SuppressLint("SetTextI18n")
     private fun updateUI() {
         taskNameEditText.setText(taskEditViewModel.task.name)
-        pickStartTimeBtn.text = "${taskEditViewModel.stringTime(taskEditViewModel.task.dateStart.hour)}:" +
-                taskEditViewModel.stringTime(taskEditViewModel.task.dateStart.minute)
-        pickFinishTimeBtn.text = "${taskEditViewModel.stringTime(taskEditViewModel.task.dateFinish.hour)}:" +
-                taskEditViewModel.stringTime(taskEditViewModel.task.dateFinish.minute)
+        pickStartTimeBtn.text = "${stringTime(taskEditViewModel.task.dateStart.hour)}:" +
+                stringTime(taskEditViewModel.task.dateStart.minute)
+        pickFinishTimeBtn.text = "${stringTime(taskEditViewModel.task.dateFinish.hour)}:" +
+                stringTime(taskEditViewModel.task.dateFinish.minute)
         taskDescriptionEditText.setText(taskEditViewModel.task.description)
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun onTimeSelected(time: LocalTime, flag: String) {
-        if (flag == "start") {
-            pickStartTimeBtn.text = taskEditViewModel.stringTime(time.hour) + ":" +
-                    taskEditViewModel.stringTime(time.minute)
-            pickFinishTimeBtn.text = "${taskEditViewModel.stringTime(
-                pickStartTimeBtn.text.substring(0,2).toInt() + 1)}:" +
-                    pickStartTimeBtn.text.substring(3,5)
-        } else if (flag == "finish") {
-            pickFinishTimeBtn.text = "${taskEditViewModel.stringTime(time.hour)}:" +
-                    taskEditViewModel.stringTime(time.minute)
-        }
-    }
-
     companion object {
-        private const val REQUEST_TIME = 0
         private const val DIALOG_TIME = "DialogTime"
         private const val ARG_TASK_ID = "task_id"
         private const val ARG_SELECTED_DATE = "selected_date"

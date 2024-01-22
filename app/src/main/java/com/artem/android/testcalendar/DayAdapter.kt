@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.artem.android.testcalendar.Hour.Companion.stringTime
 
 class DayAdapter(private var hours: List<Hour>): RecyclerView.Adapter<DayAdapter.DayHolder>() {
 
@@ -65,13 +66,5 @@ class DayAdapter(private var hours: List<Hour>): RecyclerView.Adapter<DayAdapter
     override fun onBindViewHolder(holder: DayHolder, position: Int) {
         val hour = hours[position]
         holder.bind(hour)
-    }
-
-    fun stringTime(time: Int): String {
-        var timeStr = time.toString()
-        if (timeStr.toInt() < 10) {
-            timeStr = "0$timeStr"
-        }
-        return timeStr
     }
 }
