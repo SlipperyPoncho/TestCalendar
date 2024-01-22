@@ -3,8 +3,6 @@ package com.artem.android.testcalendar
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -84,27 +82,8 @@ class TaskEditFragment: Fragment() {
         super.onStart()
         taskDateTextView.text = "Date ${taskEditViewModel.formattedDate(selectedDate)}"
 
-        val taskNameWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                taskEditViewModel.task.name = taskNameEditText.text.toString()
-                saveBtn.isEnabled = taskDescriptionEditText.text.toString() != "" &&
-                        taskNameEditText.text.toString() != ""
-            }
-            override fun afterTextChanged(s: Editable?) {}
-        }
-        taskNameEditText.addTextChangedListener(taskNameWatcher)
-
-        val taskDescriptionWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                taskEditViewModel.task.description = taskDescriptionEditText.text.toString()
-                saveBtn.isEnabled = taskNameEditText.text.toString() != "" &&
-                        taskDescriptionEditText.text.toString() != ""
-            }
-            override fun afterTextChanged(s: Editable?) {}
-        }
-        taskDescriptionEditText.addTextChangedListener(taskDescriptionWatcher)
+        taskNameEditText.addTextChangedListener(taskEditViewModel.taskNameWatcher)
+        taskDescriptionEditText.addTextChangedListener(taskEditViewModel.taskDescriptionWatcher)
 
         saveBtn.setOnClickListener {
             taskEditViewModel.task.dateStart = LocalDateTime.of(
@@ -123,7 +102,10 @@ class TaskEditFragment: Fragment() {
             childFragmentManager.setFragmentResultListener("requestKey", viewLifecycleOwner) {
                 _, bundle ->
                     val result = bundle.getSerializable("bundleKey") as LocalTime
-                    taskEditViewModel.task.dateStart = LocalDateTime.of(selectedDate.toLocalDate(), result)
+                    taskEditViewModel.task.dateStart = LocalDateTime.of(
+                        selectedDate.toLocalDate(),
+                        result
+                    )
                     updateUI()
             }
             val showTime = TimePickerFragment.newInstance(taskEditViewModel.task.dateStart.toLocalTime())
@@ -133,9 +115,12 @@ class TaskEditFragment: Fragment() {
         pickFinishTimeBtn.setOnClickListener {
             childFragmentManager.setFragmentResultListener("requestKey", viewLifecycleOwner) {
                     _, bundle ->
-                val result = bundle.getSerializable("bundleKey") as LocalTime
-                taskEditViewModel.task.dateFinish = LocalDateTime.of(selectedDate.toLocalDate(), result)
-                updateUI()
+                        val result = bundle.getSerializable("bundleKey") as LocalTime
+                        taskEditViewModel.task.dateFinish = LocalDateTime.of(
+                            selectedDate.toLocalDate(),
+                            result
+                        )
+                        updateUI()
             }
             val showTime = TimePickerFragment.newInstance(taskEditViewModel.task.dateFinish.toLocalTime())
             showTime.show(this@TaskEditFragment.childFragmentManager, DIALOG_TIME)

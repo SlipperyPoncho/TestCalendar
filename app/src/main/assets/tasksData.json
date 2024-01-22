@@ -3,5 +3,5 @@
   "name":"TaskFromJSON1",
   "date_start":"1705795200000",
   "date_finish":"1705800600000",
-  "description":"my description"
+  "description":"json description"
 }
