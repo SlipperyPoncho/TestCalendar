@@ -1,4 +1,4 @@
-package com.artem.android.testcalendar
+package com.artem.android.testcalendar.ui.taskeditfragment
 
 import android.text.Editable
 import android.text.TextWatcher
@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
+import com.artem.android.testcalendar.domain.TaskRepository
+import com.artem.android.testcalendar.model.Task
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID

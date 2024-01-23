@@ -1,9 +1,9 @@
-package com.artem.android.testcalendar.database
+package com.artem.android.testcalendar.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.artem.android.testcalendar.Task
+import com.artem.android.testcalendar.model.Task
 
 @Database(entities = [Task::class], version = 1)
 @TypeConverters(TaskTypeConverters::class)

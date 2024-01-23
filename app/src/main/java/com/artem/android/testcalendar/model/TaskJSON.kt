@@ -1,4 +1,4 @@
-package com.artem.android.testcalendar.utils
+package com.artem.android.testcalendar.model
 
 import com.google.gson.annotations.SerializedName
 

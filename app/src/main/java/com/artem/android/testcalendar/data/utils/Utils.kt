@@ -1,4 +1,4 @@
-package com.artem.android.testcalendar.utils
+package com.artem.android.testcalendar.data.utils
 
 import android.content.Context
 import java.io.BufferedReader

@@ -2,6 +2,8 @@ package com.artem.android.testcalendar
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.artem.android.testcalendar.ui.calendarfragment.CalendarFragment
+import com.artem.android.testcalendar.ui.taskeditfragment.TaskEditFragment
 import java.time.LocalDateTime
 import java.util.UUID
 

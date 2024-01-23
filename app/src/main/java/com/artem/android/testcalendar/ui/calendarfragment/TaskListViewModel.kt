@@ -1,9 +1,11 @@
-package com.artem.android.testcalendar
+package com.artem.android.testcalendar.ui.calendarfragment
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.artem.android.testcalendar.utils.TaskJSON
-import com.artem.android.testcalendar.utils.readJSONFromAssets
+import com.artem.android.testcalendar.model.TaskJSON
+import com.artem.android.testcalendar.data.utils.readJSONFromAssets
+import com.artem.android.testcalendar.domain.TaskRepository
+import com.artem.android.testcalendar.model.Task
 import com.google.gson.Gson
 import java.time.Instant
 import java.time.LocalDate

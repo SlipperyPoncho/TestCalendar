@@ -1,4 +1,4 @@
-package com.artem.android.testcalendar
+package com.artem.android.testcalendar.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,4 +1,4 @@
-package com.artem.android.testcalendar.database
+package com.artem.android.testcalendar.data.database
 
 import androidx.room.TypeConverter
 import java.time.Instant

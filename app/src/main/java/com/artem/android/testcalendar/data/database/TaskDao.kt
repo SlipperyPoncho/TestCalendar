@@ -1,4 +1,4 @@
-package com.artem.android.testcalendar.database
+package com.artem.android.testcalendar.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -6,7 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.artem.android.testcalendar.Task
+import com.artem.android.testcalendar.model.Task
 import java.util.UUID
 
 @Dao

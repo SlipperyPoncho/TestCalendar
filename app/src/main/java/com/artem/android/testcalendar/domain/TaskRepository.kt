@@ -1,9 +1,10 @@
-package com.artem.android.testcalendar
+package com.artem.android.testcalendar.domain
 
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
-import com.artem.android.testcalendar.database.TaskDatabase
+import com.artem.android.testcalendar.model.Task
+import com.artem.android.testcalendar.data.database.TaskDatabase
 import java.lang.IllegalStateException
 import java.util.UUID
 import java.util.concurrent.Executors

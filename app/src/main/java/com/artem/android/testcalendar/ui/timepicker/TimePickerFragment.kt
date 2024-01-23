@@ -1,4 +1,4 @@
-package com.artem.android.testcalendar
+package com.artem.android.testcalendar.ui.timepicker
 
 import android.app.Dialog
 import android.app.TimePickerDialog
